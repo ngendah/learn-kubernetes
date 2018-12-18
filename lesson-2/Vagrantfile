@@ -1,0 +1,44 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure('2') do |config|
+  box = 'fedora/28-cloud-base'
+  master_hostname = 'k8s-master'
+  node_hostname = 'k8s-minion'
+  node_config = <<-CONFIG
+kind: Config
+clusters:
+- name: local
+  cluster:
+    server: http://#{master_hostname}:8080
+users:
+- name: kubelet
+contexts:
+- context:
+    cluster: local
+    user: kubelet
+  name: kubelet-context
+current-context: kubelet-context
+  CONFIG
+
+  config.vm.define :minion do |minion|
+    minion.vm.box = box
+    minion.vm.hostname = node_hostname
+    minion.vm.provider :libvirt do |libvirt, override|
+      libvirt.memory = 512
+      libvirt.nested = true
+    end
+    # TODO: replace echo with tee
+    minion.vm.provision 'shell', inline: <<-SHELL
+      set -x
+      dnf update -y
+      dnf install -y kubernetes etcd
+      sed -ie 's|^\\(KUBE_MASTER\\)=.*|\\1="--master=http://#{master_hostname}:8080"|' /etc/kubernetes/config
+      sed -ie 's|^\\(KUBELET_ADDRESS\\)=.*|\\1="--address=0.0.0.0"|' /etc/kubernetes/config
+      sed -ie 's|^\\(KUBELET_HOSTNAME\\)=.*|\\1=|" /etc/kubernetes/config
+      echo "#{node_config}" > /etc/kubernetes/master-kubeconfig.yaml
+      sed -ie 's|^\\(KUBELET_ARGS\\)=.*|\\1="--cgroup-driver=systemd --kubeconfig=/etc/kubernetes/master-kubeconfig.yaml"|' /etc/kubernetes/config
+      systemctl restart kube-proxy kubelet docker
+    SHELL
+  end
+end
