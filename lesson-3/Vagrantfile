@@ -1,26 +1,5 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
-# set up master and node and get them talking to each other
-# References:
-# https://kubernetes.io/docs/getting-started-guides/fedora/fedora_manual_config/
-# https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/
-#
-
-nginx_pod = <<-POD
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-spec:
-  containers:
-    - image: nginx
-      name: nginx
-      ports:
-        - containerPort: 80
-          name: http
-POD
-
 Vagrant.configure('2') do |config|
   box = 'fedora/28-cloud-base'
   master_hostname = 'k8s-master'
@@ -68,6 +47,7 @@ current-context: kubelet-context
       libvirt.memory = 512
       libvirt.nested = true
     end
+    minion.vm.provision 'file', source: "./nginx-pod.yml", destination: "nginx-pod.yml"
     # TODO: replace echo with tee
     minion.vm.provision 'shell', inline: <<-SHELL
       set -x
@@ -79,6 +59,8 @@ current-context: kubelet-context
       echo "#{node_config}" > /etc/kubernetes/master-kubeconfig.yaml
       sed -ie 's|^\\(KUBELET_ARGS\\)=.*|\\1="--cgroup-driver=systemd --kubeconfig=/etc/kubernetes/master-kubeconfig.yaml"|' /etc/kubernetes/config
       systemctl restart kube-proxy kubelet docker
+      kubectl create -f ~/nginx-pod.yml
+      kubectl get pod -w
     SHELL
   end
 end
