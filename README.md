@@ -3,9 +3,7 @@ Learn Kubernetes
 
 This lessons focus on setting up kubernetes on a "bare" machine, what is called single node Kubernetes.
 
-This tutorials were motivated by the long winding road I took while learning Kubernetes and wished if I had similar resource.
-
-I will focus on making it simple and painless so that you can quickly getted started with kubernetes.
+I will focus on making it simple so that you can quickly getted started with kubernetes.
 
 The only assumption I make is modest knowledge of containers and linux system.
 
@@ -21,11 +19,12 @@ It's composed of a collection programs which work together to automate the manag
 
 A pod is a "collection" of containers which together form a unit of deployment.
 
-For example, modern web application are composed of a web app that is connected to an API backend. The two applications would be containerized separately but be connected in some way in order to form a single unit. Its this single unit that is considered as a unit of deployment.
+For example, modern web application are composed of a web frontend that is connected to an API backend. The two applications are usually containerized separately and connected together through some network layer in order to form a single unit. Its this single unit that is considered as a unit of deployment.
 
-But in other times we might not have mutiple separate apps, but instead just a single app, for example an API service. This also are considered as single unit of deployments.
+Other times we might not have mutiple separate apps, but instead just a single app, for example an API service. This can also be considered as single unit of deployments.
 
   b. Service
+
 
   c. Cluster
 
