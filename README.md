@@ -3,7 +3,7 @@ Learn Kubernetes
 
 This lessons focus on setting up kubernetes on a "bare" machine, what is called single node Kubernetes.
 
-I will focus on making it simple so that you can quickly get started with kubernetes.
+I will focus on making it simple so that you can gain knowledge of running the main kubernetes components.
 
 The only assumption I make is modest knowledge of the linux system and [linux containers](https://www.docker.com/resources/what-container) with [docker](https://www.docker.com/get-started).
 
@@ -13,9 +13,9 @@ Kubernetes is defined on the Kubernetes website as "an open source system for au
 
 It's composed of a collection programs which work together to automate the process of building, deploying and managing of container applications on available computing resources. This is accomplished by the fact that kubernetes offers a single unified view of all the available computing resources.
 
-Before embarking on the hands-on tutorial of Kubernetes, let's first understand the various parts/terms that forms the Kubernetes world.
+Before embarking on the hands-on tutorial of Kubernetes, let's first understand the main components that forms the Kubernetes world.
 
-### Terms
+### Components
 
   a. Pod
 
@@ -33,7 +33,11 @@ Labels should not be abitrary and should be thought out early and follow the rul
 
   b. Node
 
-A node is the computing resource in which a pod or pods are deployed.
+A node is the computing resource in which a pod or pods are deployed and executed. Nodes are managed by a controlling hub, and this requires the following services to be run on each node;
+
+1. kubelet
+
+2. kube-proxy
 
   c. Service
 
@@ -47,34 +51,54 @@ selector:
 ```
 
   d. Cluster
-A cluster is a collection of nodes plus their controlling hub cobbled together. 
+
+A cluster is a collection of nodes plus their controlling hub cobbled together. The control hub also called the master hub, is comprised of the following of programs;
+
+1. etcd
+
+2. Kubernetes API server
+
+3. Kubernetes scheduler
+
+4. Kubernetes control manager
 
   e. Controller
 
 
   f. LifeCycle
 
-### Control plane
-
 
 ### Lessons
 
-  1. Docker
+Before running Kubernetes the following dependencies need to be running
 
-  2. Etcd
+  1. [Etcd](https://github.com/etcd-io/etcd) and
 
-  3. Kubernetes
+  2. [Docker](https://www.docker.com/get-started)
 
-    a. kubectl
+I will assume at this point they are, and pickup from there;
 
-    b. kube-apiserver
+a. kubectl
 
-    c. kubelet
 
-    d. kube-controller-manager
 
-    e. kube-scheduler
+b. kube-apiserver
 
-    f. kube-proxy
+c. kubelet
+
+d. kube-controller-manager
+
+e. kube-scheduler
+
+f. kube-proxy
 
 ### 5. Next steps
+While this is a good way to gain knowledge of the main components required in running Kubernetes, its cumbersome and not scalable.
+
+However there are many viable alternatives, including;
+
+1. [Rancher](https://github.com/rancher/rancher), my favourite.
+
+2. Openshift
+
+3. Cloud services such as Amazon Fargate, Google Kubernetes Engine, et.c
